@@ -14,7 +14,6 @@ for i in range(10):
     links, names = get_links(soup)
     HD, SD = select_hd(links, names)
     nome = anime_name + " EP " + str(ep) + " " + names[1] + ".mp4"
-    #download_file(links[2], _dir = "D:\\Videos\\Animes\\One Piece\\", local_filename = nome)
     tenta_baixar(HD, SD, nome, ep)
     ep += 1
 

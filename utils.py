@@ -33,9 +33,10 @@ def download_file(url, _dir = "", local_filename = ""):
     return local_filename
 
 def tenta_baixar(HD_Links, SD_Links, name, ep):
+    print("Baixando Ep " + str(ep))
     try:
         print("Tentando HD 1")
-        download_file(HD_Links[2], _dir = "D:\\Videos\\Animes\\One Piece\\", local_filename = name)
+        download_file(HD_Links[1], _dir = "D:\\Videos\\Animes\\One Piece\\", local_filename = name)
     except requests.exceptions.Timeout:
         print("Timeout, Tentanto HD 2")
         download_file(HD_Links[0], _dir = "D:\\Videos\\Animes\\One Piece\\", local_filename = name)

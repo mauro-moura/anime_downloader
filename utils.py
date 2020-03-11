@@ -32,17 +32,17 @@ def download_file(url, _dir = "", local_filename = ""):
                 f.write(chunk)
     return local_filename
 
-def tenta_baixar(HD_Links, SD_Links, name, ep):
+def tenta_baixar(HD_Links, SD_Links, _dir, name, ep):
     print("Baixando Ep " + str(ep))
     try:
         print("Tentando HD 1")
-        download_file(HD_Links[1], _dir = "D:\\Videos\\Animes\\One Piece\\", local_filename = name)
+        download_file(HD_Links[1], _dir, local_filename = name)
     except requests.exceptions.Timeout:
         print("Timeout, Tentanto HD 2")
-        download_file(HD_Links[0], _dir = "D:\\Videos\\Animes\\One Piece\\", local_filename = name)
+        download_file(HD_Links[0], _dir, local_filename = name)
     except requests.exceptions.HTTPError:
         print("Erro de HTTP, tentando SD 1")
-        download_file(SD_Links[-1], _dir = "D:\\Videos\\Animes\\One Piece\\", local_filename = name)
+        download_file(SD_Links[-1], _dir, local_filename = name)
     except requests.exceptions.RequestException as e:
         print(e)
         print("Parou no ep " + str(ep))

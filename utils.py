@@ -5,6 +5,9 @@ Baseado em: https://www.digitalocean.com/community/tutorials/como-fazer-scraping
 """
 
 import requests
+from requests import ConnectionError
+from bs4 import BeautifulSoup
+import sys
 
 def get_info(soup):
     name_list = soup.find(class_='body')
@@ -36,13 +39,16 @@ def tenta_baixar(HD_Links, SD_Links, _dir, name, ep):
     print("Baixando Ep " + str(ep))
     try:
         print("Tentando HD 1")
-        download_file(HD_Links[1], _dir, local_filename = name)
+        download_file(HD_Links[-1], _dir, local_filename = name)
     except requests.exceptions.Timeout:
         print("Timeout, Tentanto HD 2")
         download_file(HD_Links[0], _dir, local_filename = name)
     except requests.exceptions.HTTPError:
         print("Erro de HTTP, tentando SD 1")
         download_file(SD_Links[-1], _dir, local_filename = name)
+    except ConnectionError:
+        print("Sua internet caiu, tente novamente mais tarde")
+        sys.exit()
     except requests.exceptions.RequestException as e:
         print(e)
         print("Parou no ep " + str(ep))
@@ -58,3 +64,30 @@ def select_hd(links, names):
             SD_Link.append(links[pos])
         pos += 1
     return HD_Link, SD_Link
+
+def verifica_link(link):
+    r = requests.get(link, stream=True)
+    if ('Content-Length' in r.headers):
+        return True
+    else:
+        return False
+
+def filter_links(links):
+    link_filtrado = []
+    for link in links:
+        if verifica_link(link):
+            link_filtrado.append(link)
+    return link_filtrado
+
+def preprocessing(anime_link, ep, anime_name):
+    url = anime_link + "/episodio/"+ str(ep)
+    page = requests.get(url)
+    soup = BeautifulSoup(page.text, 'html.parser')
+    links, names = get_links(soup)
+    HD, SD = select_hd(links, names)
+    HD_filtrado = filter_links(HD)
+    SD_filtrado = filter_links(SD)
+    nome = anime_name + " EP " + str(ep) + " " + names[1] + ".mp4"
+
+    return nome, HD_filtrado, SD_filtrado
+

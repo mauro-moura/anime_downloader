@@ -25,14 +25,31 @@ def get_links(soup):
         names.append(name.contents[0]) #Pega os textos
         links.append(name.get('href')) #Pega os links
     return links, names
-    
+
 def download_file(url, _dir = "", local_filename = ""):
     #local_filename = url.split('/')[-1]
     r = requests.get(url, stream=True)
+    total = r.headers['Content-Length']
+    progress = 0
+    cursor = 0
+    percentage = 0
+    sys.stdout.write('['+' '*10+']  0%')
+    sys.stdout.flush()
     with open(_dir + local_filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size = 1024): 
             if chunk: # filter out keep-alive new chunks
                 f.write(chunk)
+                progress += 1024
+                percentage = round((int(progress)/int(total)) * 100)
+
+                if (cursor*10 == percentage and cursor < 11):
+                    sys.stdout.write('\b'*(15-cursor) + '=')
+                    if(cursor < 9):
+                        sys.stdout.write('>')
+                    sys.stdout.write(' '*(8-cursor) + '] ' + str(cursor) + '0%')
+                    sys.stdout.flush()
+                    cursor += 1
+    sys.stdout.write('\b\b\b\bBaixado!\n')
     return local_filename
 
 def tenta_baixar(HD_Links, SD_Links, _dir, name, ep):

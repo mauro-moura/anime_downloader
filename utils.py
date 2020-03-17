@@ -41,13 +41,11 @@ def download_file(url, _dir = "", local_filename = ""):
     return local_filename
 
 def progress_bar(count, total, suffix=''):
-    bar_len = 60
+    bar_len = 40
     filled_len = int(round(bar_len * count / float(total)))
-
     percents = round(100.0 * count / float(total), 1)
     bar = '=' * filled_len + '-' * (bar_len - filled_len)
-
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
+    sys.stdout.write('[%s] %s%s ...%s\r' %(bar, percents, '%', suffix))
     sys.stdout.flush()
 
 def tenta_baixar(HD_Links, SD_Links, _dir, name, ep):
@@ -103,7 +101,12 @@ def preprocessing(anime_link, ep, anime_name):
     HD, SD = select_hd(links, names)
     HD_filtrado = filter_links(HD)
     SD_filtrado = filter_links(SD)
-    nome = anime_name + " EP " + str(ep) + " " + names[1] + ".mp4"
+
+    if (HD):
+        definition = "HD"
+    else:
+        definition = "SD"
+    nome = anime_name + " EP " + str(ep) + " " + definition + ".mp4"
 
     return nome, HD_filtrado, SD_filtrado
 

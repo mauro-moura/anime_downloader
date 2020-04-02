@@ -90,7 +90,8 @@ def filter_links(links):
     link_filtrado = []
     for link in links:
         if verifica_link(link):
-            link_filtrado.append(link)
+            if (link != None):
+                link_filtrado.append(link)
     return link_filtrado
 
 def preprocessing(anime_link, ep, anime_name):
